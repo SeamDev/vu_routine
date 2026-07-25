@@ -1,0 +1,1178 @@
+<html><head></head><body><hr>
+    <style>
+        .slot-cell {
+            height: 140px;
+            min-width: 150px;
+            border: 1px solid #ddd;
+            vertical-align: top !important;
+            padding: 5px;
+            background-color: #fcfcfc;
+        }
+        .event-card {
+            font-size: 12px;
+            margin-bottom: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            border-left: 4px solid #337ab7;
+            padding: 8px;
+            border-radius: 3px;
+            border-top: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            max-height: 130px;
+            overflow-y: auto;
+        }
+        .event-card[data-is-consecutive="1"] {
+            border-left: 4px solid #5cb85c;
+            background: #f0fff0;
+        }
+        .event-card[data-combined-group]:not([data-combined-group=""]) {
+            border-right: 3px solid #5bc0de;
+        }
+        .table-dark-head th {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+        }
+        .bg-grey {
+            background-color: #eee;
+        }
+
+        /* Mobile-first layout */
+        .routine-day {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            background: #fff;
+        }
+        .routine-day-header {
+            background: #f5f5f5;
+            font-weight: 700;
+            padding: 8px 10px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .routine-slot {
+            padding: 8px 10px;
+            border-bottom: 1px dashed #e8e8e8;
+        }
+        .routine-slot:last-child {
+            border-bottom: 0;
+        }
+        .routine-slot-meta {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 6px;
+            line-height: 1.35;
+        }
+        .course-code-chip {
+            display: inline-block;
+            margin: 0 6px 6px 0;
+            padding: 4px 8px;
+            border-radius: 14px;
+            background: #337ab7;
+            color: #fff;
+            font-size: 11px;
+            line-height: 1.2;
+        }
+        .course-code-chip.consecutive {
+            background: #4b9f4b;
+        }
+        .course-code-chip.combined {
+            background: #2c8ca5;
+        }
+        .routine-item-details {
+            margin-top: 4px;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            padding: 6px 8px;
+            background: #fafafa;
+            font-size: 12px;
+        }
+        .routine-item-summary {
+            list-style: none;
+            cursor: pointer;
+            outline: none;
+        }
+        .routine-item-summary::-webkit-details-marker {
+            display: none;
+        }
+        .routine-item-summary .tap-text {
+            color: #337ab7;
+            font-size: 11px;
+            margin-left: 4px;
+        }
+        .mobile-note {
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+    </style>
+
+    <div class="alert alert-info" style="margin-bottom: 10px;">
+                <strong>B. Sc. in CSE</strong>
+        | Semester: 3rd Semester
+                    | Section: E
+                <br>
+        <small>
+                            <strong>This routine is currently your default.</strong>
+                <a href="#" class="js-clear-default-routine" style="margin-left: 8px;">Clear default</a>
+                    </small>
+    </div>
+
+    <div class="visible-xs-block mobile-note text-muted">
+        Tap a course code to see full details.
+    </div>
+
+    <div class="visible-xs-block">
+                    <div class="routine-day">
+                <div class="routine-day-header">Saturday</div>
+
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 1</strong>
+                            | 09:00 AM - 10:05 AM
+                        </div>
+
+                                                    <span class="text-muted small">No class</span>
+                                            </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 2</strong>
+                            | 10:05 AM - 11:10 AM
+                        </div>
+
+                                                    <span class="text-muted small">No class</span>
+                                            </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 3</strong>
+                            | 11:10 AM - 12:15 PM
+                        </div>
+
+                                                    <span class="text-muted small">No class</span>
+                                            </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 4</strong>
+                            | 12:15 PM - 01:15 PM
+                        </div>
+
+                                                    <span class="text-muted small">No class</span>
+                                            </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 5</strong>
+                            | 01:50 PM - 02:55 PM
+                        </div>
+
+                                                    <span class="text-muted small">No class</span>
+                                            </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 6</strong>
+                            | 02:55 PM - 04:00 PM
+                        </div>
+
+                                                    <span class="text-muted small">No class</span>
+                                            </div>
+                            </div>
+                    <div class="routine-day">
+                <div class="routine-day-header">Sunday</div>
+
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 1</strong>
+                            | 09:00 AM - 10:05 AM
+                        </div>
+
+                                                                                                                    <details>
+                                    <summary class="routine-item-summary">
+                                        <span class="course-code-chip">CSE 2105</span>
+                                        <span class="tap-text">tap for details</span>
+                                    </summary>
+                                    <div class="routine-item-details">
+                                        <div><strong>Course:</strong> Digital System Design</div>
+                                        <div>
+                                            <strong>Class:</strong>
+                                            3rd-E
+                                                                                    </div>
+                                        <div>
+                                            <strong>Teacher:</strong>
+                                                                                            Zannatul Mifta
+                                                                                    </div>
+                                        <div><strong>Room:</strong> 411</div>
+                                                                            </div>
+                                </details>
+                                                                        </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 2</strong>
+                            | 10:05 AM - 11:10 AM
+                        </div>
+
+                                                    <span class="text-muted small">No class</span>
+                                            </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 3</strong>
+                            | 11:10 AM - 12:15 PM
+                        </div>
+
+                                                                                                                    <details>
+                                    <summary class="routine-item-summary">
+                                        <span class="course-code-chip">CSE 2101</span>
+                                        <span class="tap-text">tap for details</span>
+                                    </summary>
+                                    <div class="routine-item-details">
+                                        <div><strong>Course:</strong> Object Oriented Programming</div>
+                                        <div>
+                                            <strong>Class:</strong>
+                                            3rd-E
+                                                                                    </div>
+                                        <div>
+                                            <strong>Teacher:</strong>
+                                                                                            A.S.M Delwar Hossain
+                                                                                    </div>
+                                        <div><strong>Room:</strong> 814</div>
+                                                                            </div>
+                                </details>
+                                                                        </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 4</strong>
+                            | 12:15 PM - 01:15 PM
+                        </div>
+
+                                                                                                                    <details>
+                                    <summary class="routine-item-summary">
+                                        <span class="course-code-chip">MAT 2141</span>
+                                        <span class="tap-text">tap for details</span>
+                                    </summary>
+                                    <div class="routine-item-details">
+                                        <div><strong>Course:</strong> Differential Equations</div>
+                                        <div>
+                                            <strong>Class:</strong>
+                                            3rd-E
+                                                                                    </div>
+                                        <div>
+                                            <strong>Teacher:</strong>
+                                                                                            Sraboni Mostofa
+                                                                                    </div>
+                                        <div><strong>Room:</strong> 414</div>
+                                                                            </div>
+                                </details>
+                                                                        </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 5</strong>
+                            | 01:50 PM - 02:55 PM
+                        </div>
+
+                                                    <span class="text-muted small">No class</span>
+                                            </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 6</strong>
+                            | 02:55 PM - 04:00 PM
+                        </div>
+
+                                                    <span class="text-muted small">No class</span>
+                                            </div>
+                            </div>
+                    <div class="routine-day">
+                <div class="routine-day-header">Monday</div>
+
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 1</strong>
+                            | 09:00 AM - 10:05 AM
+                        </div>
+
+                                                    <span class="text-muted small">No class</span>
+                                            </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 2</strong>
+                            | 10:05 AM - 11:10 AM
+                        </div>
+
+                                                                                                                    <details>
+                                    <summary class="routine-item-summary">
+                                        <span class="course-code-chip">ECO 2171</span>
+                                        <span class="tap-text">tap for details</span>
+                                    </summary>
+                                    <div class="routine-item-details">
+                                        <div><strong>Course:</strong> Engineering Economics</div>
+                                        <div>
+                                            <strong>Class:</strong>
+                                            3rd-E
+                                                                                    </div>
+                                        <div>
+                                            <strong>Teacher:</strong>
+                                                                                            Eco New Teacher 1
+                                                                                    </div>
+                                        <div><strong>Room:</strong> 512</div>
+                                                                            </div>
+                                </details>
+                                                                        </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 3</strong>
+                            | 11:10 AM - 12:15 PM
+                        </div>
+
+                                                                                                                    <details>
+                                    <summary class="routine-item-summary">
+                                        <span class="course-code-chip">CSE 2106</span>
+                                        <span class="tap-text">tap for details</span>
+                                    </summary>
+                                    <div class="routine-item-details">
+                                        <div><strong>Course:</strong> Digital System Design Lab</div>
+                                        <div>
+                                            <strong>Class:</strong>
+                                            3rd-E
+                                                                                    </div>
+                                        <div>
+                                            <strong>Teacher:</strong>
+                                                                                            Mst. Jannatul Ferdous, Zannatul Mifta
+                                                                                    </div>
+                                        <div><strong>Room:</strong> 127 EEL</div>
+                                                                            </div>
+                                </details>
+                                                                        </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 4</strong>
+                            | 12:15 PM - 01:15 PM
+                        </div>
+
+                                                                                                                    <details>
+                                    <summary class="routine-item-summary">
+                                        <span class="course-code-chip">CSE 2101</span>
+                                        <span class="tap-text">tap for details</span>
+                                    </summary>
+                                    <div class="routine-item-details">
+                                        <div><strong>Course:</strong> Object Oriented Programming</div>
+                                        <div>
+                                            <strong>Class:</strong>
+                                            3rd-E
+                                                                                    </div>
+                                        <div>
+                                            <strong>Teacher:</strong>
+                                                                                            A.S.M Delwar Hossain
+                                                                                    </div>
+                                        <div><strong>Room:</strong> 812</div>
+                                                                            </div>
+                                </details>
+                                                                        </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 5</strong>
+                            | 01:50 PM - 02:55 PM
+                        </div>
+
+                                                    <span class="text-muted small">No class</span>
+                                            </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 6</strong>
+                            | 02:55 PM - 04:00 PM
+                        </div>
+
+                                                                                                                    <details>
+                                    <summary class="routine-item-summary">
+                                        <span class="course-code-chip">CSE 2103</span>
+                                        <span class="tap-text">tap for details</span>
+                                    </summary>
+                                    <div class="routine-item-details">
+                                        <div><strong>Course:</strong> Data Structures</div>
+                                        <div>
+                                            <strong>Class:</strong>
+                                            3rd-E
+                                                                                    </div>
+                                        <div>
+                                            <strong>Teacher:</strong>
+                                                                                            Afroza Islam
+                                                                                    </div>
+                                        <div><strong>Room:</strong> 1008</div>
+                                                                            </div>
+                                </details>
+                                                                        </div>
+                            </div>
+                    <div class="routine-day">
+                <div class="routine-day-header">Tuesday</div>
+
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 1</strong>
+                            | 09:00 AM - 10:05 AM
+                        </div>
+
+                                                    <span class="text-muted small">No class</span>
+                                            </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 2</strong>
+                            | 10:05 AM - 11:10 AM
+                        </div>
+
+                                                                                                                    <details>
+                                    <summary class="routine-item-summary">
+                                        <span class="course-code-chip consecutive">CSE 2102</span>
+                                        <span class="tap-text">tap for details</span>
+                                    </summary>
+                                    <div class="routine-item-details">
+                                        <div><strong>Course:</strong> Object Oriented Programming Lab</div>
+                                        <div>
+                                            <strong>Class:</strong>
+                                            3rd-E
+                                                                                    </div>
+                                        <div>
+                                            <strong>Teacher:</strong>
+                                                                                            A.S.M Delwar Hossain, Mohammad Faisal Al-Naser
+                                                                                    </div>
+                                        <div><strong>Room:</strong> 103 DMSL</div>
+                                                                            </div>
+                                </details>
+                                                                        </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 3</strong>
+                            | 11:10 AM - 12:15 PM
+                        </div>
+
+                                                                                                                    <details>
+                                    <summary class="routine-item-summary">
+                                        <span class="course-code-chip consecutive">CSE 2102</span>
+                                        <span class="tap-text">tap for details</span>
+                                    </summary>
+                                    <div class="routine-item-details">
+                                        <div><strong>Course:</strong> Object Oriented Programming Lab</div>
+                                        <div>
+                                            <strong>Class:</strong>
+                                            3rd-E
+                                                                                    </div>
+                                        <div>
+                                            <strong>Teacher:</strong>
+                                                                                            A.S.M Delwar Hossain, Mohammad Faisal Al-Naser
+                                                                                    </div>
+                                        <div><strong>Room:</strong> 103 DMSL</div>
+                                                                            </div>
+                                </details>
+                                                                        </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 4</strong>
+                            | 12:15 PM - 01:15 PM
+                        </div>
+
+                                                    <span class="text-muted small">No class</span>
+                                            </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 5</strong>
+                            | 01:50 PM - 02:55 PM
+                        </div>
+
+                                                                                                                    <details>
+                                    <summary class="routine-item-summary">
+                                        <span class="course-code-chip">CSE 2105</span>
+                                        <span class="tap-text">tap for details</span>
+                                    </summary>
+                                    <div class="routine-item-details">
+                                        <div><strong>Course:</strong> Digital System Design</div>
+                                        <div>
+                                            <strong>Class:</strong>
+                                            3rd-E
+                                                                                    </div>
+                                        <div>
+                                            <strong>Teacher:</strong>
+                                                                                            Zannatul Mifta
+                                                                                    </div>
+                                        <div><strong>Room:</strong> 512</div>
+                                                                            </div>
+                                </details>
+                                                                        </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 6</strong>
+                            | 02:55 PM - 04:00 PM
+                        </div>
+
+                                                    <span class="text-muted small">No class</span>
+                                            </div>
+                            </div>
+                    <div class="routine-day">
+                <div class="routine-day-header">Wednesday</div>
+
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 1</strong>
+                            | 09:00 AM - 10:05 AM
+                        </div>
+
+                                                    <span class="text-muted small">No class</span>
+                                            </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 2</strong>
+                            | 10:05 AM - 11:10 AM
+                        </div>
+
+                                                    <span class="text-muted small">No class</span>
+                                            </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 3</strong>
+                            | 11:10 AM - 12:15 PM
+                        </div>
+
+                                                    <span class="text-muted small">No class</span>
+                                            </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 4</strong>
+                            | 12:15 PM - 01:15 PM
+                        </div>
+
+                                                                                                                    <details>
+                                    <summary class="routine-item-summary">
+                                        <span class="course-code-chip consecutive">CSE 2104</span>
+                                        <span class="tap-text">tap for details</span>
+                                    </summary>
+                                    <div class="routine-item-details">
+                                        <div><strong>Course:</strong> Data Structures Lab</div>
+                                        <div>
+                                            <strong>Class:</strong>
+                                            3rd-E
+                                                                                    </div>
+                                        <div>
+                                            <strong>Teacher:</strong>
+                                                                                            Sumaiya Tasnim Dristi, Afroza Islam
+                                                                                    </div>
+                                        <div><strong>Room:</strong> 103 DMSL</div>
+                                                                            </div>
+                                </details>
+                                                                        </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 5</strong>
+                            | 01:50 PM - 02:55 PM
+                        </div>
+
+                                                                                                                    <details>
+                                    <summary class="routine-item-summary">
+                                        <span class="course-code-chip consecutive">CSE 2104</span>
+                                        <span class="tap-text">tap for details</span>
+                                    </summary>
+                                    <div class="routine-item-details">
+                                        <div><strong>Course:</strong> Data Structures Lab</div>
+                                        <div>
+                                            <strong>Class:</strong>
+                                            3rd-E
+                                                                                    </div>
+                                        <div>
+                                            <strong>Teacher:</strong>
+                                                                                            Sumaiya Tasnim Dristi, Afroza Islam
+                                                                                    </div>
+                                        <div><strong>Room:</strong> 103 DMSL</div>
+                                                                            </div>
+                                </details>
+                                                                        </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 6</strong>
+                            | 02:55 PM - 04:00 PM
+                        </div>
+
+                                                    <span class="text-muted small">No class</span>
+                                            </div>
+                            </div>
+                    <div class="routine-day">
+                <div class="routine-day-header">Thursday</div>
+
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 1</strong>
+                            | 09:00 AM - 10:05 AM
+                        </div>
+
+                                                    <span class="text-muted small">No class</span>
+                                            </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 2</strong>
+                            | 10:05 AM - 11:10 AM
+                        </div>
+
+                                                    <span class="text-muted small">No class</span>
+                                            </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 3</strong>
+                            | 11:10 AM - 12:15 PM
+                        </div>
+
+                                                    <span class="text-muted small">No class</span>
+                                            </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 4</strong>
+                            | 12:15 PM - 01:15 PM
+                        </div>
+
+                                                                                                                    <details>
+                                    <summary class="routine-item-summary">
+                                        <span class="course-code-chip">ECO 2171</span>
+                                        <span class="tap-text">tap for details</span>
+                                    </summary>
+                                    <div class="routine-item-details">
+                                        <div><strong>Course:</strong> Engineering Economics</div>
+                                        <div>
+                                            <strong>Class:</strong>
+                                            3rd-E
+                                                                                    </div>
+                                        <div>
+                                            <strong>Teacher:</strong>
+                                                                                            Eco New Teacher 1
+                                                                                    </div>
+                                        <div><strong>Room:</strong> 511</div>
+                                                                            </div>
+                                </details>
+                                                                        </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 5</strong>
+                            | 01:50 PM - 02:55 PM
+                        </div>
+
+                                                                                                                    <details>
+                                    <summary class="routine-item-summary">
+                                        <span class="course-code-chip">MAT 2141</span>
+                                        <span class="tap-text">tap for details</span>
+                                    </summary>
+                                    <div class="routine-item-details">
+                                        <div><strong>Course:</strong> Differential Equations</div>
+                                        <div>
+                                            <strong>Class:</strong>
+                                            3rd-E
+                                                                                    </div>
+                                        <div>
+                                            <strong>Teacher:</strong>
+                                                                                            Sraboni Mostofa
+                                                                                    </div>
+                                        <div><strong>Room:</strong> 509</div>
+                                                                            </div>
+                                </details>
+                                                                        </div>
+                                    <div class="routine-slot">
+                        <div class="routine-slot-meta">
+                            <strong>Slot 6</strong>
+                            | 02:55 PM - 04:00 PM
+                        </div>
+
+                                                                                                                    <details>
+                                    <summary class="routine-item-summary">
+                                        <span class="course-code-chip">CSE 2103</span>
+                                        <span class="tap-text">tap for details</span>
+                                    </summary>
+                                    <div class="routine-item-details">
+                                        <div><strong>Course:</strong> Data Structures</div>
+                                        <div>
+                                            <strong>Class:</strong>
+                                            3rd-E
+                                                                                    </div>
+                                        <div>
+                                            <strong>Teacher:</strong>
+                                                                                            Afroza Islam
+                                                                                    </div>
+                                        <div><strong>Room:</strong> 913</div>
+                                                                            </div>
+                                </details>
+                                                                        </div>
+                            </div>
+            </div>
+
+    <div class="hidden-xs table-responsive">
+        <table class="table table-bordered table-condensed">
+            <thead class="table-dark-head">
+                <tr>
+                    <th style="width: 100px;">Day</th>
+                                            <th>
+                            Slot 1<br>
+                            <small>09:00 AM - 10:05 AM</small>
+                        </th>
+                                            <th>
+                            Slot 2<br>
+                            <small>10:05 AM - 11:10 AM</small>
+                        </th>
+                                            <th>
+                            Slot 3<br>
+                            <small>11:10 AM - 12:15 PM</small>
+                        </th>
+                                            <th>
+                            Slot 4<br>
+                            <small>12:15 PM - 01:15 PM</small>
+                        </th>
+                                            <th>
+                            Slot 5<br>
+                            <small>01:50 PM - 02:55 PM</small>
+                        </th>
+                                            <th>
+                            Slot 6<br>
+                            <small>02:55 PM - 04:00 PM</small>
+                        </th>
+                                    </tr>
+            </thead>
+            <tbody>
+                                    <tr>
+                        <th class="bg-grey text-center" style="vertical-align: middle;">
+                            <strong>Saturday</strong>
+                        </th>
+                                                    <td class="slot-cell">
+                                                            </td>
+                                                    <td class="slot-cell">
+                                                            </td>
+                                                    <td class="slot-cell">
+                                                            </td>
+                                                    <td class="slot-cell">
+                                                            </td>
+                                                    <td class="slot-cell">
+                                                            </td>
+                                                    <td class="slot-cell">
+                                                            </td>
+                                            </tr>
+                                    <tr>
+                        <th class="bg-grey text-center" style="vertical-align: middle;">
+                            <strong>Sunday</strong>
+                        </th>
+                                                    <td class="slot-cell">
+                                                                                                            <div class="event-card" data-id="10596" data-is-consecutive="0" data-combined-group="">
+
+                                            <div class="clearfix">
+                                                <div class="text-bold pull-left" style="font-size: 13px;">
+                                                    CSE 2105
+                                                </div>
+                                                <div class="pull-right" style="font-size: 14px; font-weight: bold; color: #333;">
+                                                    3rd-E
+                                                                                                    </div>
+                                            </div>
+
+                                            <div style="clear: both; font-size: 11px; margin-top: 3px;">
+                                                Digital System Design
+                                            </div>
+
+                                                                                                                                                <div class="text-muted" style="margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        <i class="fa fa-user"></i> Zannatul Mifta
+                                                    </div>
+                                                                                            
+                                                                                            <span style="font-size: 11px; font-weight: bold;">Room: 411</span>
+                                            
+                                                                                    </div>
+                                                                                                </td>
+                                                    <td class="slot-cell">
+                                                            </td>
+                                                    <td class="slot-cell">
+                                                                                                            <div class="event-card" data-id="10835" data-is-consecutive="0" data-combined-group="">
+
+                                            <div class="clearfix">
+                                                <div class="text-bold pull-left" style="font-size: 13px;">
+                                                    CSE 2101
+                                                </div>
+                                                <div class="pull-right" style="font-size: 14px; font-weight: bold; color: #333;">
+                                                    3rd-E
+                                                                                                    </div>
+                                            </div>
+
+                                            <div style="clear: both; font-size: 11px; margin-top: 3px;">
+                                                Object Oriented Programming
+                                            </div>
+
+                                                                                                                                                <div class="text-muted" style="margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        <i class="fa fa-user"></i> A.S.M Delwar Hossain
+                                                    </div>
+                                                                                            
+                                                                                            <span style="font-size: 11px; font-weight: bold;">Room: 814</span>
+                                            
+                                                                                    </div>
+                                                                                                </td>
+                                                    <td class="slot-cell">
+                                                                                                            <div class="event-card" data-id="10624" data-is-consecutive="0" data-combined-group="">
+
+                                            <div class="clearfix">
+                                                <div class="text-bold pull-left" style="font-size: 13px;">
+                                                    MAT 2141
+                                                </div>
+                                                <div class="pull-right" style="font-size: 14px; font-weight: bold; color: #333;">
+                                                    3rd-E
+                                                                                                    </div>
+                                            </div>
+
+                                            <div style="clear: both; font-size: 11px; margin-top: 3px;">
+                                                Differential Equations
+                                            </div>
+
+                                                                                                                                                <div class="text-muted" style="margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        <i class="fa fa-user"></i> Sraboni Mostofa
+                                                    </div>
+                                                                                            
+                                                                                            <span style="font-size: 11px; font-weight: bold;">Room: 414</span>
+                                            
+                                                                                    </div>
+                                                                                                </td>
+                                                    <td class="slot-cell">
+                                                            </td>
+                                                    <td class="slot-cell">
+                                                            </td>
+                                            </tr>
+                                    <tr>
+                        <th class="bg-grey text-center" style="vertical-align: middle;">
+                            <strong>Monday</strong>
+                        </th>
+                                                    <td class="slot-cell">
+                                                            </td>
+                                                    <td class="slot-cell">
+                                                                                                            <div class="event-card" data-id="10877" data-is-consecutive="0" data-combined-group="">
+
+                                            <div class="clearfix">
+                                                <div class="text-bold pull-left" style="font-size: 13px;">
+                                                    ECO 2171
+                                                </div>
+                                                <div class="pull-right" style="font-size: 14px; font-weight: bold; color: #333;">
+                                                    3rd-E
+                                                                                                    </div>
+                                            </div>
+
+                                            <div style="clear: both; font-size: 11px; margin-top: 3px;">
+                                                Engineering Economics
+                                            </div>
+
+                                                                                                                                                <div class="text-muted" style="margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        <i class="fa fa-user"></i> Eco New Teacher 1
+                                                    </div>
+                                                                                            
+                                                                                            <span style="font-size: 11px; font-weight: bold;">Room: 512</span>
+                                            
+                                                                                    </div>
+                                                                                                </td>
+                                                    <td class="slot-cell">
+                                                                                                            <div class="event-card" data-id="10610" data-is-consecutive="0" data-combined-group="">
+
+                                            <div class="clearfix">
+                                                <div class="text-bold pull-left" style="font-size: 13px;">
+                                                    CSE 2106
+                                                </div>
+                                                <div class="pull-right" style="font-size: 14px; font-weight: bold; color: #333;">
+                                                    3rd-E
+                                                                                                    </div>
+                                            </div>
+
+                                            <div style="clear: both; font-size: 11px; margin-top: 3px;">
+                                                Digital System Design Lab
+                                            </div>
+
+                                                                                                                                                <div class="text-muted" style="margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        <i class="fa fa-user"></i> Mst. Jannatul Ferdous
+                                                    </div>
+                                                                                                    <div class="text-muted" style="margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        <i class="fa fa-user"></i> Zannatul Mifta
+                                                    </div>
+                                                                                            
+                                                                                            <span style="font-size: 11px; font-weight: bold;">Room: 127 EEL</span>
+                                            
+                                                                                    </div>
+                                                                                                </td>
+                                                    <td class="slot-cell">
+                                                                                                            <div class="event-card" data-id="10836" data-is-consecutive="0" data-combined-group="">
+
+                                            <div class="clearfix">
+                                                <div class="text-bold pull-left" style="font-size: 13px;">
+                                                    CSE 2101
+                                                </div>
+                                                <div class="pull-right" style="font-size: 14px; font-weight: bold; color: #333;">
+                                                    3rd-E
+                                                                                                    </div>
+                                            </div>
+
+                                            <div style="clear: both; font-size: 11px; margin-top: 3px;">
+                                                Object Oriented Programming
+                                            </div>
+
+                                                                                                                                                <div class="text-muted" style="margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        <i class="fa fa-user"></i> A.S.M Delwar Hossain
+                                                    </div>
+                                                                                            
+                                                                                            <span style="font-size: 11px; font-weight: bold;">Room: 812</span>
+                                            
+                                                                                    </div>
+                                                                                                </td>
+                                                    <td class="slot-cell">
+                                                            </td>
+                                                    <td class="slot-cell">
+                                                                                                            <div class="event-card" data-id="10554" data-is-consecutive="0" data-combined-group="">
+
+                                            <div class="clearfix">
+                                                <div class="text-bold pull-left" style="font-size: 13px;">
+                                                    CSE 2103
+                                                </div>
+                                                <div class="pull-right" style="font-size: 14px; font-weight: bold; color: #333;">
+                                                    3rd-E
+                                                                                                    </div>
+                                            </div>
+
+                                            <div style="clear: both; font-size: 11px; margin-top: 3px;">
+                                                Data Structures
+                                            </div>
+
+                                                                                                                                                <div class="text-muted" style="margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        <i class="fa fa-user"></i> Afroza Islam
+                                                    </div>
+                                                                                            
+                                                                                            <span style="font-size: 11px; font-weight: bold;">Room: 1008</span>
+                                            
+                                                                                    </div>
+                                                                                                </td>
+                                            </tr>
+                                    <tr>
+                        <th class="bg-grey text-center" style="vertical-align: middle;">
+                            <strong>Tuesday</strong>
+                        </th>
+                                                    <td class="slot-cell">
+                                                            </td>
+                                                    <td class="slot-cell">
+                                                                                                            <div class="event-card" data-id="10857" data-is-consecutive="1" data-combined-group="">
+
+                                            <div class="clearfix">
+                                                <div class="text-bold pull-left" style="font-size: 13px;">
+                                                    CSE 2102
+                                                </div>
+                                                <div class="pull-right" style="font-size: 14px; font-weight: bold; color: #333;">
+                                                    3rd-E
+                                                                                                    </div>
+                                            </div>
+
+                                            <div style="clear: both; font-size: 11px; margin-top: 3px;">
+                                                Object Oriented Programming Lab
+                                            </div>
+
+                                                                                                                                                <div class="text-muted" style="margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        <i class="fa fa-user"></i> A.S.M Delwar Hossain
+                                                    </div>
+                                                                                                    <div class="text-muted" style="margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        <i class="fa fa-user"></i> Mohammad Faisal Al-Naser
+                                                    </div>
+                                                                                            
+                                                                                            <span style="font-size: 11px; font-weight: bold;">Room: 103 DMSL</span>
+                                            
+                                                                                    </div>
+                                                                                                </td>
+                                                    <td class="slot-cell">
+                                                                                                            <div class="event-card" data-id="10859" data-is-consecutive="1" data-combined-group="">
+
+                                            <div class="clearfix">
+                                                <div class="text-bold pull-left" style="font-size: 13px;">
+                                                    CSE 2102
+                                                </div>
+                                                <div class="pull-right" style="font-size: 14px; font-weight: bold; color: #333;">
+                                                    3rd-E
+                                                                                                    </div>
+                                            </div>
+
+                                            <div style="clear: both; font-size: 11px; margin-top: 3px;">
+                                                Object Oriented Programming Lab
+                                            </div>
+
+                                                                                                                                                <div class="text-muted" style="margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        <i class="fa fa-user"></i> A.S.M Delwar Hossain
+                                                    </div>
+                                                                                                    <div class="text-muted" style="margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        <i class="fa fa-user"></i> Mohammad Faisal Al-Naser
+                                                    </div>
+                                                                                            
+                                                                                            <span style="font-size: 11px; font-weight: bold;">Room: 103 DMSL</span>
+                                            
+                                                                                    </div>
+                                                                                                </td>
+                                                    <td class="slot-cell">
+                                                            </td>
+                                                    <td class="slot-cell">
+                                                                                                            <div class="event-card" data-id="10597" data-is-consecutive="0" data-combined-group="">
+
+                                            <div class="clearfix">
+                                                <div class="text-bold pull-left" style="font-size: 13px;">
+                                                    CSE 2105
+                                                </div>
+                                                <div class="pull-right" style="font-size: 14px; font-weight: bold; color: #333;">
+                                                    3rd-E
+                                                                                                    </div>
+                                            </div>
+
+                                            <div style="clear: both; font-size: 11px; margin-top: 3px;">
+                                                Digital System Design
+                                            </div>
+
+                                                                                                                                                <div class="text-muted" style="margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        <i class="fa fa-user"></i> Zannatul Mifta
+                                                    </div>
+                                                                                            
+                                                                                            <span style="font-size: 11px; font-weight: bold;">Room: 512</span>
+                                            
+                                                                                    </div>
+                                                                                                </td>
+                                                    <td class="slot-cell">
+                                                            </td>
+                                            </tr>
+                                    <tr>
+                        <th class="bg-grey text-center" style="vertical-align: middle;">
+                            <strong>Wednesday</strong>
+                        </th>
+                                                    <td class="slot-cell">
+                                                            </td>
+                                                    <td class="slot-cell">
+                                                            </td>
+                                                    <td class="slot-cell">
+                                                            </td>
+                                                    <td class="slot-cell">
+                                                                                                            <div class="event-card" data-id="10576" data-is-consecutive="1" data-combined-group="">
+
+                                            <div class="clearfix">
+                                                <div class="text-bold pull-left" style="font-size: 13px;">
+                                                    CSE 2104
+                                                </div>
+                                                <div class="pull-right" style="font-size: 14px; font-weight: bold; color: #333;">
+                                                    3rd-E
+                                                                                                    </div>
+                                            </div>
+
+                                            <div style="clear: both; font-size: 11px; margin-top: 3px;">
+                                                Data Structures Lab
+                                            </div>
+
+                                                                                                                                                <div class="text-muted" style="margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        <i class="fa fa-user"></i> Sumaiya Tasnim Dristi
+                                                    </div>
+                                                                                                    <div class="text-muted" style="margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        <i class="fa fa-user"></i> Afroza Islam
+                                                    </div>
+                                                                                            
+                                                                                            <span style="font-size: 11px; font-weight: bold;">Room: 103 DMSL</span>
+                                            
+                                                                                    </div>
+                                                                                                </td>
+                                                    <td class="slot-cell">
+                                                                                                            <div class="event-card" data-id="10578" data-is-consecutive="1" data-combined-group="">
+
+                                            <div class="clearfix">
+                                                <div class="text-bold pull-left" style="font-size: 13px;">
+                                                    CSE 2104
+                                                </div>
+                                                <div class="pull-right" style="font-size: 14px; font-weight: bold; color: #333;">
+                                                    3rd-E
+                                                                                                    </div>
+                                            </div>
+
+                                            <div style="clear: both; font-size: 11px; margin-top: 3px;">
+                                                Data Structures Lab
+                                            </div>
+
+                                                                                                                                                <div class="text-muted" style="margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        <i class="fa fa-user"></i> Sumaiya Tasnim Dristi
+                                                    </div>
+                                                                                                    <div class="text-muted" style="margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        <i class="fa fa-user"></i> Afroza Islam
+                                                    </div>
+                                                                                            
+                                                                                            <span style="font-size: 11px; font-weight: bold;">Room: 103 DMSL</span>
+                                            
+                                                                                    </div>
+                                                                                                </td>
+                                                    <td class="slot-cell">
+                                                            </td>
+                                            </tr>
+                                    <tr>
+                        <th class="bg-grey text-center" style="vertical-align: middle;">
+                            <strong>Thursday</strong>
+                        </th>
+                                                    <td class="slot-cell">
+                                                            </td>
+                                                    <td class="slot-cell">
+                                                            </td>
+                                                    <td class="slot-cell">
+                                                            </td>
+                                                    <td class="slot-cell">
+                                                                                                            <div class="event-card" data-id="10878" data-is-consecutive="0" data-combined-group="">
+
+                                            <div class="clearfix">
+                                                <div class="text-bold pull-left" style="font-size: 13px;">
+                                                    ECO 2171
+                                                </div>
+                                                <div class="pull-right" style="font-size: 14px; font-weight: bold; color: #333;">
+                                                    3rd-E
+                                                                                                    </div>
+                                            </div>
+
+                                            <div style="clear: both; font-size: 11px; margin-top: 3px;">
+                                                Engineering Economics
+                                            </div>
+
+                                                                                                                                                <div class="text-muted" style="margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        <i class="fa fa-user"></i> Eco New Teacher 1
+                                                    </div>
+                                                                                            
+                                                                                            <span style="font-size: 11px; font-weight: bold;">Room: 511</span>
+                                            
+                                                                                    </div>
+                                                                                                </td>
+                                                    <td class="slot-cell">
+                                                                                                            <div class="event-card" data-id="10625" data-is-consecutive="0" data-combined-group="">
+
+                                            <div class="clearfix">
+                                                <div class="text-bold pull-left" style="font-size: 13px;">
+                                                    MAT 2141
+                                                </div>
+                                                <div class="pull-right" style="font-size: 14px; font-weight: bold; color: #333;">
+                                                    3rd-E
+                                                                                                    </div>
+                                            </div>
+
+                                            <div style="clear: both; font-size: 11px; margin-top: 3px;">
+                                                Differential Equations
+                                            </div>
+
+                                                                                                                                                <div class="text-muted" style="margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        <i class="fa fa-user"></i> Sraboni Mostofa
+                                                    </div>
+                                                                                            
+                                                                                            <span style="font-size: 11px; font-weight: bold;">Room: 509</span>
+                                            
+                                                                                    </div>
+                                                                                                </td>
+                                                    <td class="slot-cell">
+                                                                                                            <div class="event-card" data-id="10555" data-is-consecutive="0" data-combined-group="">
+
+                                            <div class="clearfix">
+                                                <div class="text-bold pull-left" style="font-size: 13px;">
+                                                    CSE 2103
+                                                </div>
+                                                <div class="pull-right" style="font-size: 14px; font-weight: bold; color: #333;">
+                                                    3rd-E
+                                                                                                    </div>
+                                            </div>
+
+                                            <div style="clear: both; font-size: 11px; margin-top: 3px;">
+                                                Data Structures
+                                            </div>
+
+                                                                                                                                                <div class="text-muted" style="margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        <i class="fa fa-user"></i> Afroza Islam
+                                                    </div>
+                                                                                            
+                                                                                            <span style="font-size: 11px; font-weight: bold;">Room: 913</span>
+                                            
+                                                                                    </div>
+                                                                                                </td>
+                                            </tr>
+                            </tbody>
+        </table>
+    </div>
+</body></html>

@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:vu_routine/module/screen.dart';
-import 'package:vu_routine/widgets/exit_conformation.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:get/get.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:vu_routine/app/core/app_theme.dart';
+import 'package:vu_routine/app/routes/app_pages.dart';
+import 'package:vu_routine/app/utils/hive_service.dart';
 
 void main() async {
   WidgetsBinding widgwtBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgwtBinding);
-  await Hive.initFlutter();
-  await Hive.openBox("HiveBox");
-  await Hive.openBox('updateBox');
+  await HiveService.init();
   runApp(MyApp());
   await Future.delayed(const Duration(seconds: 2));
   FlutterNativeSplash.remove();
@@ -21,9 +20,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: ExitConfirmationWrapper(child: SheetDataScreen()),
+      title: 'VU Routine',
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.light,
+      initialRoute: AppPages.INITIAL,
+      getPages: AppPages.routes,
     );
   }
 }
