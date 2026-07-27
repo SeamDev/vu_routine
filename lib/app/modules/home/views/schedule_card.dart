@@ -5,8 +5,14 @@ import 'package:vu_routine/app/utils/call.dart';
 class ScheduleCard extends StatelessWidget {
   final ScheduleModel schedule;
   final bool isLast;
+  final bool isActive;
 
-  const ScheduleCard({super.key, required this.schedule, required this.isLast});
+  const ScheduleCard({
+    super.key,
+    required this.schedule,
+    required this.isLast,
+    required this.isActive,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +46,7 @@ class ScheduleCard extends StatelessWidget {
             width: 36,
             child: Align(
               alignment: Alignment.topCenter,
-              child: TimelineDot(isActive: true),
+              child: TimelineDot(isActive: isActive),
             ),
           ),
 
@@ -58,7 +64,7 @@ class ScheduleCard extends StatelessWidget {
                           image: AssetImage(schedule.backgroundImage!),
                           alignment: Alignment.centerRight,
                           scale: 2.5,
-                          opacity: .15,
+                          opacity: .5,
                         ),
               ),
               padding: const EdgeInsets.all(18),
@@ -133,15 +139,21 @@ class TimelineDot extends StatelessWidget {
   Widget build(BuildContext context) {
     if (isActive) {
       return Container(
-        width: 14,
-        height: 14,
+        width: 20,
+        height: 20,
         decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.all(color: const Color(0xff8D7BFF), width: 2),
+          border: Border.all(
+            color: isActive ? Colors.green : const Color(0xff8D7BFF),
+            width: 3,
+          ),
           shape: BoxShape.circle,
         ),
-        child: const Center(
-          child: CircleAvatar(radius: 3, backgroundColor: Color(0xff8D7BFF)),
+        child: Center(
+          child: CircleAvatar(
+            radius: 4,
+            backgroundColor: isActive ? Colors.green : const Color(0xff8D7BFF),
+          ),
         ),
       );
     }

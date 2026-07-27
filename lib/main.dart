@@ -11,7 +11,7 @@ void main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgwtBinding);
   await HiveService.init();
   runApp(MyApp());
-  await Future.delayed(const Duration(seconds: 2));
+  //await Future.delayed(const Duration(seconds: 1));
   FlutterNativeSplash.remove();
 }
 
@@ -25,9 +25,22 @@ class MyApp extends StatelessWidget {
       title: 'VU Routine',
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.light,
+      themeMode: getSavedThemeMode(),
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
     );
+  }
+}
+
+ThemeMode getSavedThemeMode() {
+  final value = HiveService.get<String>("theme") ?? "";
+
+  switch (value) {
+    case 'light':
+      return ThemeMode.light;
+    case 'dark':
+      return ThemeMode.dark;
+    default:
+      return ThemeMode.system;
   }
 }

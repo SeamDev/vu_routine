@@ -14,7 +14,9 @@ class TaskView extends GetView<TaskController> {
       appBar: AppBar(title: const Text('TaskView'), centerTitle: true),
       body: Center(
         child: ElevatedButton.icon(
-          onPressed: () => controller.updateInfo(),
+          onPressed: () {
+            controller;
+          },
           icon: const Icon(Icons.add, size: 18),
           label: const Text("Update Routine"),
           style: ElevatedButton.styleFrom(

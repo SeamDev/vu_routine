@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vu_routine/app/modules/home/views/home_view.dart';
-import 'package:vu_routine/app/modules/task/views/task_view.dart';
+import 'package:vu_routine/app/modules/settings/views/settings_view.dart';
 
 import '../controllers/navbar_controller.dart';
 
@@ -19,7 +19,7 @@ class NavbarView extends GetView<NavbarController> {
           index: controller.currentIndex.value,
           children: const [
             HomeView(),
-            TaskView(),
+            SettingsView(),
             //Center(child: Text("Classroom")),
             //Center(child: Text("Chat")),
           ],
@@ -44,7 +44,7 @@ class NavbarView extends GetView<NavbarController> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _item(icon: Icons.home_rounded, label: "Home", index: 0),
-                _item(icon: Icons.check_box_rounded, label: "Tasks", index: 1),
+                _item(icon: Icons.settings, label: "Settings", index: 1),
                 /*
                 _item(
                   icon: Icons.school_rounded,

@@ -1,8 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
-import 'dart:io' as io;
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:vu_routine/app/models/schedule_model.dart';
 import 'package:vu_routine/app/utils/hive_service.dart';
 import 'package:vu_routine/app/utils/html_parser.dart';
@@ -13,6 +14,7 @@ class HomeController extends GetxController {
   RxMap<String, dynamic> info = <String, dynamic>{}.obs;
   RxBool isLoading = true.obs;
   final days = [].obs;
+  RxInt selectedIndex = 3.obs;
   Map<String, List<ScheduleModel>> data = <String, List<ScheduleModel>>{}.obs;
   List<ScheduleModel> get selectedSchedule {
     final dayName = days[selectedIndex.value]["day"];
@@ -31,21 +33,32 @@ class HomeController extends GetxController {
     return data[fullDayName] ?? [];
   }
 
-  RxInt selectedIndex = 3.obs;
+  final activeScheduleIndex = (-1).obs;
+  final activeScheduleStatus = "".obs;
+
+  Timer? _timer;
 
   @override
   void onInit() async {
     super.onInit();
     final savedUser = await HiveService.get("user");
 
+    days.assignAll(getDate());
     if (savedUser == null) {
-      Get.snackbar("Failed", "ReLoad Routine");
+      Get.snackbar("Failed", "Upload a routine first.");
+      isLoading.value = false;
       return;
     }
-    days.assignAll(getDate());
     info.assignAll(Map<String, dynamic>.from(savedUser));
     data.assignAll(convertToScheduleMap(info));
     isLoading.value = false;
+    startScheduleTimer();
+  }
+
+  @override
+  void onClose() {
+    _timer?.cancel();
+    super.onClose();
   }
 
   void updateInfo() async {
@@ -55,7 +68,15 @@ class HomeController extends GetxController {
         return;
       }
       final json = extractRoutineFromHtml(htmlString);
+      if (json.isEmpty) {
+        Get.snackbar("Failed", "Upload a valid routine file");
+        return;
+      }
       await HiveService.save("user", json);
+
+      info.assignAll(Map<String, dynamic>.from(json));
+      data.assignAll(convertToScheduleMap(info));
+      startScheduleTimer();
       Get.snackbar("Success", "Routine update successful");
     } catch (e) {
       Get.snackbar("Failed", e.toString());
@@ -65,8 +86,8 @@ class HomeController extends GetxController {
   Future<String?> pickHtmlFileAsString() async {
     try {
       FilePickerResult? result = await FilePicker.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['html', 'htm'],
+        type: FileType.any,
+        //allowedExtensions: ['html', 'htm','mhtml',""],
         withData: true,
       );
       // 2. Return null if the user cancels the picker
@@ -77,7 +98,11 @@ class HomeController extends GetxController {
       PlatformFile file = result.files.first;
 
       final extension = file.extension?.toLowerCase();
-      if (extension != 'html' && extension != 'htm') {
+      if (extension != 'html' &&
+          extension != 'htm' &&
+          extension != 'mhtml' &&
+          extension != 'mht' &&
+          !(file.name.toLowerCase().contains("varendra university"))) {
         Get.snackbar(
           "Invalid Format",
           "The selected file is not an HTML/HTM file.",
@@ -85,19 +110,10 @@ class HomeController extends GetxController {
         return null;
       }
 
-      // Web path: Read directly from bytes
-      if (kIsWeb && file.bytes != null) {
-        return utf8.decode(file.bytes!);
-      }
-
-      // Mobile / Desktop path: Read from the local device storage path
-      if (!kIsWeb && file.path != null) {
-        final ioFile = io.File(file.path!);
-        return await ioFile.readAsString();
-      }
-      return null;
+      return latin1.decode(file.bytes!);
     } catch (e) {
       Get.snackbar("Error", e.toString());
+      debugPrint(e.toString());
       return null;
     }
   }
@@ -182,8 +198,9 @@ class HomeController extends GetxController {
             room: value['room'],
             number: findTeacher(value['teacher']) ?? "Not Found",
             // Optional
-            color: const Color(0xff7F72F8),
-            backgroundImage: 'image.png',
+            color: getColorByCourse(value['courseCode']),
+            backgroundImage:
+                'assets/${getImagePathByCourse(value['courseCode'])}',
           ),
         );
       });
@@ -199,5 +216,122 @@ class HomeController extends GetxController {
     }
 
     return result;
+  }
+
+  Color getColorByCourse(String code) {
+    switch (code) {
+      case "CSE 2105": // DSD
+        return Color(0xFF64748B);
+      case "CSE 2106":
+        return Color(0xFFD97706);
+      case "CSE 2101": // OOP
+        return Color(0xFF3B82F6);
+      case "CSE 2102":
+        return Color(0xFF658A71);
+      case "CSE 2103": // DS
+        return Color(0xFF8B5CF6);
+      case "CSE 2104":
+        return Color(0xFF475569);
+      case "MAT 2141": // math
+        return Color(0xFF0D9488);
+      case "ECO 2171": // Eco
+        return Color(0xFFD97775);
+      default:
+        return Color(0xff7F72F8);
+    }
+  }
+
+  String getImagePathByCourse(String code) {
+    switch (code) {
+      case "CSE 2105": // DSD
+        return "dsd.png";
+      case "CSE 2106":
+        return "dsdl.png";
+      case "CSE 2101": // OOP
+        return "opp.png";
+      case "CSE 2102":
+        return "oppl.png";
+      case "CSE 2103": // DS
+        return "ds.png";
+      case "CSE 2104":
+        return "dsl.png";
+      case "MAT 2141": // math
+        return "math.png";
+      case "ECO 2171": // Eco
+        return "eco.png";
+      default:
+        return "image.png";
+    }
+  }
+
+  void startScheduleTimer() {
+    _timer?.cancel();
+
+    _updateScheduleStatus();
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      _updateScheduleStatus();
+    });
+  }
+
+  void _updateScheduleStatus() {
+    List<ScheduleModel> schedules = selectedSchedule;
+    final now = DateTime.now();
+
+    activeScheduleIndex.value = -1;
+    activeScheduleStatus.value = "";
+
+    for (int i = 0; i < schedules.length; i++) {
+      final schedule = schedules[i];
+
+      final start = _parseTime(schedule.startTime);
+      final end = _parseTime(schedule.endTime);
+
+      // Current class
+      if (!now.isBefore(start) && now.isBefore(end)) {
+        activeScheduleIndex.value = i;
+
+        final remain = end.difference(now);
+
+        activeScheduleStatus.value = "Ends in ${_formatDuration(remain)}";
+
+        return;
+      }
+
+      // Next class
+      if (now.isBefore(start)) {
+        final remain = start.difference(now);
+
+        activeScheduleStatus.value = "Starts in ${_formatDuration(remain)}";
+
+        return;
+      }
+    }
+
+    activeScheduleStatus.value = "No more classes today";
+  }
+
+  DateTime _parseTime(String time) {
+    final t = DateFormat("hh:mm a").parse(time);
+
+    final now = DateTime.now();
+
+    return DateTime(now.year, now.month, now.day, t.hour, t.minute);
+  }
+
+  String _formatDuration(Duration duration) {
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes.remainder(60);
+    final seconds = duration.inSeconds.remainder(60);
+
+    if (hours > 0) {
+      return "${hours}h ${minutes}m";
+    }
+
+    if (minutes > 0) {
+      return "${minutes}m ${seconds}s";
+    }
+
+    return "${seconds}s";
   }
 }

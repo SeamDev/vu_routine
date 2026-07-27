@@ -2,22 +2,26 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart' as parser;
 
 Map<String, dynamic> extractRoutineFromHtml(String html) {
-  final document = parser.parse(html);
+  try {
+    final document = parser.parse(html);
 
-  final Map<String, dynamic> result = {};
+    final Map<String, dynamic> result = {};
 
-  // TimeSlot
-  final th = document
-      .querySelectorAll('.table-dark-head')[0]
-      .querySelectorAll("th");
+    // TimeSlot
+    final th = document
+        .querySelectorAll('.table-dark-head')[0]
+        .querySelectorAll("th");
 
-  result.addAll({"time_slot": formatTimeSlot(th)});
-  // week
-  final tb = document.querySelectorAll("tbody tr");
+    result.addAll({"time_slot": formatTimeSlot(th)});
+    // week
+    final tb = document.querySelectorAll("tbody tr");
 
-  result.addAll(formatRoutine(tb));
-  //print(result);
-  return result;
+    result.addAll(formatRoutine(tb));
+    //print(result);
+    return result;
+  } catch (e) {
+    return {};
+  }
 }
 
 List<Map<String, String>> formatTimeSlot(List<Element> data) {
