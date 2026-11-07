@@ -41,10 +41,7 @@ class ScheduleItem extends StatelessWidget {
                 ),
                 Text(
                   endTime,
-                  style: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 14,
-                  ),
+                  style: const TextStyle(color: Colors.grey, fontSize: 14),
                 ),
               ],
             ),
@@ -57,10 +54,7 @@ class ScheduleItem extends StatelessWidget {
                 height: 14,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(
-                    color: const Color(0xFF7C6EF6),
-                    width: 2,
-                  ),
+                  border: Border.all(color: const Color(0xFF7C6EF6), width: 2),
                 ),
                 child: const Center(
                   child: CircleAvatar(
@@ -70,10 +64,7 @@ class ScheduleItem extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: Container(
-                  width: 2,
-                  color: const Color(0xFF7C6EF6),
-                ),
+                child: Container(width: 2, color: const Color(0xFF7C6EF6)),
               ),
             ],
           ),
@@ -94,7 +85,7 @@ class ScheduleItem extends StatelessWidget {
                     alignment: Alignment.topRight,
                     child: Icon(
                       Icons.more_vert,
-                      color: textColor.withOpacity(.6),
+                      color: textColor.withValues(alpha: .6),
                     ),
                   ),
 
@@ -112,7 +103,7 @@ class ScheduleItem extends StatelessWidget {
                   Text(
                     subtitle,
                     style: TextStyle(
-                      color: textColor.withOpacity(.7),
+                      color: textColor.withValues(alpha: .7),
                       fontSize: 15,
                     ),
                   ),
@@ -123,10 +114,7 @@ class ScheduleItem extends StatelessWidget {
                     children: [
                       const CircleAvatar(radius: 9),
                       const SizedBox(width: 8),
-                      Text(
-                        teacher,
-                        style: TextStyle(color: textColor),
-                      ),
+                      Text(teacher, style: TextStyle(color: textColor)),
                     ],
                   ),
 
@@ -134,16 +122,9 @@ class ScheduleItem extends StatelessWidget {
 
                   Row(
                     children: [
-                      const Icon(
-                        Icons.videocam,
-                        color: Colors.green,
-                        size: 18,
-                      ),
+                      const Icon(Icons.videocam, color: Colors.green, size: 18),
                       const SizedBox(width: 8),
-                      Text(
-                        meeting,
-                        style: TextStyle(color: textColor),
-                      ),
+                      Text(meeting, style: TextStyle(color: textColor)),
                     ],
                   ),
                 ],

@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:vu_routine/app/models/schedule_model.dart';
+import 'package:vu_routine/app/models/schedule_home_model.dart';
 import 'package:vu_routine/app/utils/hive_service.dart';
 import 'package:vu_routine/app/utils/html_parser.dart';
 import 'package:file_picker/file_picker.dart';
@@ -85,17 +85,15 @@ class HomeController extends GetxController {
 
   Future<String?> pickHtmlFileAsString() async {
     try {
-      FilePickerResult? result = await FilePicker.pickFiles(
+      List<PlatformFile> files = await FilePicker.pickFiles(
         type: FileType.any,
-        //allowedExtensions: ['html', 'htm','mhtml',""],
-        withData: true,
       );
-      // 2. Return null if the user cancels the picker
-      if (result == null || result.files.isEmpty) {
+
+      if (files.isEmpty) {
         return null;
       }
 
-      PlatformFile file = result.files.first;
+      PlatformFile file = files.first;
 
       final extension = file.extension?.toLowerCase();
       if (extension != 'html' &&
@@ -110,7 +108,8 @@ class HomeController extends GetxController {
         return null;
       }
 
-      return latin1.decode(file.bytes!);
+      final bytes = await file.xFile.readAsBytes();
+      return latin1.decode(bytes);
     } catch (e) {
       Get.snackbar("Error", e.toString());
       debugPrint(e.toString());

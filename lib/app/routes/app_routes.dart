@@ -9,6 +9,7 @@ abstract class Routes {
   static const HOME = _Paths.HOME;
   static const TASK = _Paths.TASK;
   static const SETTINGS = _Paths.SETTINGS;
+  static const SCHEDULE = _Paths.SCHEDULE;
 }
 
 abstract class _Paths {
@@ -17,4 +18,5 @@ abstract class _Paths {
   static const HOME = '/home';
   static const TASK = '/task';
   static const SETTINGS = '/settings';
+  static const SCHEDULE = '/schedule';
 }

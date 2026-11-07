@@ -1,25 +1,34 @@
-import 'dart:ui';
-
 class ScheduleModel {
-  final String startTime;
-  final String endTime;
-  final String title;
-  final String subtitle;
-  final String teacher;
-  final String room;
-  final String number;
-  final Color color;
-  final String? backgroundImage;
+  final String id;
+  final String topic;
+  final String detail;
+  final DateTime scheduledAt;
+  final bool hasSpecificTime;
 
-  const ScheduleModel({
-    required this.startTime,
-    required this.endTime,
-    required this.title,
-    required this.subtitle,
-    required this.teacher,
-    required this.room,
-    required this.number,
-    required this.color,
-    this.backgroundImage,
+  ScheduleModel({
+    required this.id,
+    required this.topic,
+    required this.detail,
+    required this.scheduledAt,
+    this.hasSpecificTime = true,
   });
+
+  factory ScheduleModel.fromJson(Map<String, dynamic> json) {
+    return ScheduleModel(
+      id: json['id'].toString(),
+      topic: json['topic'] ?? '',
+      detail: json['detail'] ?? '',
+      scheduledAt: DateTime.parse(json['scheduled_at']).toLocal(),
+      hasSpecificTime: json['has_specific_time'] ?? true,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'topic': topic,
+      'detail': detail,
+      'scheduled_at': scheduledAt.toUtc().toIso8601String(),
+      'has_specific_time': hasSpecificTime,
+    };
+  }
 }

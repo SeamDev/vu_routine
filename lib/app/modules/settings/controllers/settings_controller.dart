@@ -1,15 +1,20 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:vu_routine/app/utils/hive_service.dart';
 
 class SettingsController extends GetxController {
-
   final reminderTime = 10.obs;
   final selectedTheme = ThemeMode.system.obs;
   final version = "null".obs;
 
+  int tapCount = 0;
+  Timer? tapTimer;
 
+  final isAdmin = false.obs;
+  String pKey = "";
 
   @override
   void onInit() {
@@ -17,10 +22,23 @@ class SettingsController extends GetxController {
     selectedTheme.value = getSavedThemeMode();
 
     reminderTime.value = HiveService.get("reminder_time") ?? 10;
+    isAdmin.value = HiveService.get<bool>("isAdmin") ?? false;
+    pKey = HiveService.get<String>("pKey") ?? "";
     loadPackageInfo();
   }
 
-
+  void setAdmin(String s) {
+    isAdmin.value = true;
+    pKey = s;
+    HiveService.save("isAdmin", true);
+    HiveService.save("pKey", s);
+  }
+  void offAdmin() {
+    isAdmin.value = false;
+    HiveService.save("isAdmin", false);
+    pKey = "";
+    HiveService.remove("pKey");
+  }
 
   Future<void> changeTheme(ThemeMode mode) async {
     selectedTheme.value = mode;
@@ -49,6 +67,4 @@ class SettingsController extends GetxController {
   }
 
   void openGithub() {}
-
-
 }

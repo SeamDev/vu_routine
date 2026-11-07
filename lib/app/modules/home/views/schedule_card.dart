@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vu_routine/app/models/schedule_model.dart';
+import 'package:vu_routine/app/models/schedule_home_model.dart';
 import 'package:vu_routine/app/utils/call.dart';
 
 class ScheduleCard extends StatelessWidget {

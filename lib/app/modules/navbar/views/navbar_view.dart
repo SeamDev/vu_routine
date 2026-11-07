@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vu_routine/app/modules/home/views/home_view.dart';
+import 'package:vu_routine/app/modules/schedule/views/schedule_view.dart';
 import 'package:vu_routine/app/modules/settings/views/settings_view.dart';
 
 import '../controllers/navbar_controller.dart';
@@ -19,12 +20,11 @@ class NavbarView extends GetView<NavbarController> {
           index: controller.currentIndex.value,
           children: const [
             HomeView(),
-            SettingsView(),
-            //Center(child: Text("Classroom")),
             //Center(child: Text("Chat")),
+            ScheduleView(),
+            SettingsView(),
           ],
         ),
-
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.all(20),
           child: Container(
@@ -34,7 +34,7 @@ class NavbarView extends GetView<NavbarController> {
               borderRadius: BorderRadius.circular(22),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(.08),
+                  color: Colors.black.withValues(alpha:  .08),
                   blurRadius: 25,
                   offset: const Offset(0, 10),
                 ),
@@ -44,13 +44,9 @@ class NavbarView extends GetView<NavbarController> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _item(icon: Icons.home_rounded, label: "Home", index: 0),
-                _item(icon: Icons.settings, label: "Settings", index: 1),
+                _item(icon: Icons.schedule_rounded, label: "Schedule", index: 1),
+                _item(icon: Icons.settings, label: "Settings", index: 2),
                 /*
-                _item(
-                  icon: Icons.school_rounded,
-                  label: "Class",
-                  index: 2,
-                ),
                 _item(
                   icon: Icons.chat_bubble_rounded,
                   label: "Chat",
@@ -80,10 +76,9 @@ class NavbarView extends GetView<NavbarController> {
           duration: const Duration(milliseconds: 250),
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            color:
-                selected
-                    ? const Color(0xFF53C68C).withOpacity(.15)
-                    : Colors.transparent,
+            color: selected
+                ? const Color(0xFF53C68C).withValues( alpha: .15)
+                : Colors.transparent,
             borderRadius: BorderRadius.circular(18),
           ),
           child: Column(

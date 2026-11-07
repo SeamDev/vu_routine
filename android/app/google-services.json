@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "525415127012",
+    "firebase_url": "https://vu-routine-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "vu-routine",
+    "storage_bucket": "vu-routine.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:525415127012:android:04b75dd405fbf6ec9319f1",
+        "android_client_info": {
+          "package_name": "com.seam.vu_routine"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpr8azSMnR5LnHer8RRNV2cz1EwqKo5cs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

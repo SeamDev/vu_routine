@@ -18,9 +18,7 @@ VU Routine is an app for viewing your university class routines.
 
 <!--**Download Latest APK:**  
 [Direct Download](https://github.com/SeamDev/VU-Routine/vu_routine.apk) --> 
-
-**Download from APKPure:**  
-[APKPure Link](https://apkpure.com/vu-routine/com.seam.vu_routine)  
+ 
 
 ---
 
@@ -52,4 +50,4 @@ VU Routine is an app for viewing your university class routines.
 ## 🌐 Links
 
 <!--- GitHub Repository: [https://github.com/SeamDev/VU-Routine](https://github.com/SeamDev/VU-Routine)  -->
-- APKPure Download: [https://apkpure.com/vu-routine/com.seam.vu_routine](https://apkpure.com/vu-routine/com.seam.vu_routine)
+

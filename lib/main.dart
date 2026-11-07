@@ -1,18 +1,64 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+
 // ignore: depend_on_referenced_packages
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+
+import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'package:vu_routine/app/core/app_binding.dart';
 import 'package:vu_routine/app/core/app_theme.dart';
 import 'package:vu_routine/app/routes/app_pages.dart';
+import 'package:vu_routine/app/service/notification_service.dart';
 import 'package:vu_routine/app/utils/hive_service.dart';
+import 'package:vu_routine/firebase_options.dart';
 
-void main() async {
-  WidgetsBinding widgwtBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgwtBinding);
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  return;
+  // WidgetsFlutterBinding.ensureInitialized();
+
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
+
+  // debugPrint(
+  //   'Background notification: ${message.notification?.title}',
+  // );
+
+  // // Notification payloads are displayed automatically by Android.
+  // // Only display a local notification for data-only messages.
+  // if (message.notification == null) {
+  //   await NotificationService.showBackgroundNotification(message);
+  // }
+}
+
+Future<void> main() async {
+  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
   await HiveService.init();
-  runApp(MyApp());
-  //await Future.delayed(const Duration(seconds: 1));
-  FlutterNativeSplash.remove();
+
+  await Supabase.initialize(
+    url: 'https://ixiagiabihtbffheialv.supabase.co',
+    publishableKey: 'sb_publishable_ZDEidP5WY5QErmXxNXs-lw_QXgln7Kz',
+  );
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
+  runApp(const MyApp());
+
+  WidgetsBinding.instance.addPostFrameCallback((_) async {
+    await NotificationService.instance.initialize();
+
+    FlutterNativeSplash.remove();
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -25,6 +71,7 @@ class MyApp extends StatelessWidget {
       title: 'VU Routine',
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
+      initialBinding: AppBinding(),
       themeMode: getSavedThemeMode(),
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
@@ -33,7 +80,7 @@ class MyApp extends StatelessWidget {
 }
 
 ThemeMode getSavedThemeMode() {
-  final value = HiveService.get<String>("theme") ?? "";
+  final value = HiveService.get<String>('theme') ?? '';
 
   switch (value) {
     case 'light':
