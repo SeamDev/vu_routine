@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:vu_routine/app/models/schedule_home_model.dart';
+import 'package:vu_routine/app/modules/settings/controllers/settings_controller.dart';
 import 'package:vu_routine/app/utils/hive_service.dart';
 import 'package:vu_routine/app/utils/html_parser.dart';
 import 'package:file_picker/file_picker.dart';
@@ -16,19 +18,21 @@ class HomeController extends GetxController {
   final days = [].obs;
   RxInt selectedIndex = 3.obs;
   Map<String, List<ScheduleModel>> data = <String, List<ScheduleModel>>{}.obs;
+
+  SettingsController get settingsController => Get.find<SettingsController>();
+
   List<ScheduleModel> get selectedSchedule {
     final dayName = days[selectedIndex.value]["day"];
 
-    final fullDayName =
-        {
-          "Mon": "Monday",
-          "Tue": "Tuesday",
-          "Wed": "Wednesday",
-          "Thu": "Thursday",
-          "Fri": "Friday",
-          "Sat": "Saturday",
-          "Sun": "Sunday",
-        }[dayName];
+    final fullDayName = {
+      "Mon": "Monday",
+      "Tue": "Tuesday",
+      "Wed": "Wednesday",
+      "Thu": "Thursday",
+      "Fri": "Friday",
+      "Sat": "Saturday",
+      "Sun": "Sunday",
+    }[dayName];
 
     return data[fullDayName] ?? [];
   }
@@ -61,12 +65,14 @@ class HomeController extends GetxController {
     super.onClose();
   }
 
-  void updateInfo() async {
+  void updateInfo(Uint8List? para) async {
     try {
-      String? htmlString = await pickHtmlFileAsString();
-      if (htmlString == null) {
+      Uint8List? htmlBytes = para ?? await pickHtmlFileAsString();
+
+      if (htmlBytes == null) {
         return;
       }
+      String htmlString = latin1.decode(htmlBytes);
       final json = extractRoutineFromHtml(htmlString);
       if (json.isEmpty) {
         Get.snackbar("Failed", "Upload a valid routine file");
@@ -83,11 +89,9 @@ class HomeController extends GetxController {
     }
   }
 
-  Future<String?> pickHtmlFileAsString() async {
+  Future<Uint8List?> pickHtmlFileAsString({Uint8List? bytes}) async {
     try {
-      List<PlatformFile> files = await FilePicker.pickFiles(
-        type: FileType.any,
-      );
+      List<PlatformFile> files = await FilePicker.pickFiles(type: FileType.any);
 
       if (files.isEmpty) {
         return null;
@@ -109,7 +113,10 @@ class HomeController extends GetxController {
       }
 
       final bytes = await file.xFile.readAsBytes();
-      return latin1.decode(bytes);
+      if (settingsController.isAdmin.value) {
+        settingsController.uploadFile(bytes);
+      }
+      return bytes;
     } catch (e) {
       Get.snackbar("Error", e.toString());
       debugPrint(e.toString());
@@ -164,10 +171,9 @@ class HomeController extends GetxController {
   ) {
     final Map<String, List<ScheduleModel>> result = {};
 
-    final timeSlots =
-        (json['time_slot'] as List)
-            .map((e) => Map<String, dynamic>.from(Map.from(e)))
-            .toList();
+    final timeSlots = (json['time_slot'] as List)
+        .map((e) => Map<String, dynamic>.from(Map.from(e)))
+        .toList();
 
     const weekDays = [
       'Saturday',

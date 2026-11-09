@@ -18,22 +18,6 @@ import 'package:vu_routine/firebase_options.dart';
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  return;
-  // WidgetsFlutterBinding.ensureInitialized();
-
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
-
-  // debugPrint(
-  //   'Background notification: ${message.notification?.title}',
-  // );
-
-  // // Notification payloads are displayed automatically by Android.
-  // // Only display a local notification for data-only messages.
-  // if (message.notification == null) {
-  //   await NotificationService.showBackgroundNotification(message);
-  // }
 }
 
 Future<void> main() async {
@@ -47,6 +31,7 @@ Future<void> main() async {
     url: 'https://ixiagiabihtbffheialv.supabase.co',
     publishableKey: 'sb_publishable_ZDEidP5WY5QErmXxNXs-lw_QXgln7Kz',
   );
+
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 

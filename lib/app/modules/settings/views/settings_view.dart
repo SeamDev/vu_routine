@@ -67,6 +67,30 @@ class SettingsView extends GetView<SettingsController> {
                 ),
               ),
             ),
+            CText("Routine"),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 15,
+                ),
+                child: Row(
+                  children: [
+                    IconButton(
+                      onPressed: () => controller.getLastUpdatedFile(),
+                      icon: Icon(
+                        Icons.refresh,
+                        color: const Color.fromARGB(255, 62, 82, 201),
+                        size: 40,
+                      ),
+                    ),
+                    Obx(() {
+                      return CText("Last Updated : ${controller.lastUP.value}");
+                    }),
+                  ],
+                ),
+              ),
+            ),
 
             CText("Developer"),
             Card(

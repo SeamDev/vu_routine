@@ -16,14 +16,13 @@ class ScheduleController extends GetxController {
 
   final selectedFilter = 'Upcoming'.obs;
 
-  SettingsController get settingsController =>
-    Get.find<SettingsController>();
+  RxBool deleting = false.obs;
+
+  SettingsController get settingsController => Get.find<SettingsController>();
 
   @override
   void onInit() {
     super.onInit();
-
-    //settingsController = Get.find<SettingsController>();
 
     fetchSchedules();
 
@@ -35,6 +34,7 @@ class ScheduleController extends GetxController {
   Future<void> fetchSchedules() async {
     try {
       isLoading.value = true;
+
       final response = await _supabase
           .from('schedules')
           .select()
@@ -44,14 +44,39 @@ class ScheduleController extends GetxController {
           .map((item) => ScheduleModel.fromJson(item))
           .toList();
 
+      // Update observable list
       schedules.assignAll(fetched);
+
+      // Save to Hive
+      await HiveService.save(
+        'schedules',
+        fetched.map((e) => e.toJson()).toList(),
+      );
     } catch (e) {
+      debugPrint('Fetch schedules error: $e');
+
       Get.snackbar(
-        'Error',
-        'Failed to load schedules: $e',
-        snackPosition: SnackPosition.BOTTOM,
+        'Connection Error',
+        'Failed to load schedules. Showing saved data.',
+        snackPosition: SnackPosition.TOP,
       );
     } finally {
+      // Load cached data if network fetch failed
+      if (schedules.isEmpty) {
+        final savedData = await HiveService.get('schedules');
+
+        if (savedData != null) {
+          schedules.assignAll(
+            (savedData as List)
+                .map(
+                  (item) =>
+                      ScheduleModel.fromJson(Map<String, dynamic>.from(item)),
+                )
+                .toList(),
+          );
+        }
+      }
+
       isLoading.value = false;
     }
   }
@@ -82,7 +107,7 @@ class ScheduleController extends GetxController {
       Get.snackbar(
         'Success',
         'Schedule added & global notification triggered!',
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: const Color(0xFF4238FF),
         colorText: Colors.white,
       );
@@ -90,7 +115,7 @@ class ScheduleController extends GetxController {
       Get.snackbar(
         'Access Denied',
         e.message, // Shows "Invalid Admin Key! Operation denied." if key != 1234
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.redAccent,
         colorText: Colors.white,
       );
@@ -98,7 +123,7 @@ class ScheduleController extends GetxController {
       Get.snackbar(
         'Error',
         'Could not add schedule: $e',
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
       );
     } finally {
       isLoading.value = false;
@@ -133,7 +158,7 @@ class ScheduleController extends GetxController {
       Get.snackbar(
         'Updated',
         'Schedule updated successfully!',
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: const Color(0xFF4238FF),
         colorText: Colors.white,
       );
@@ -141,7 +166,7 @@ class ScheduleController extends GetxController {
       Get.snackbar(
         'Access Denied',
         e.message,
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.redAccent,
         colorText: Colors.white,
       );
@@ -149,7 +174,7 @@ class ScheduleController extends GetxController {
       Get.snackbar(
         'Error',
         'Could not update schedule: $e',
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
       );
     } finally {
       isLoading.value = false;
@@ -171,7 +196,7 @@ class ScheduleController extends GetxController {
       Get.snackbar(
         'Deleted',
         'Schedule removed successfully!',
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.black87,
         colorText: Colors.white,
       );
@@ -179,7 +204,7 @@ class ScheduleController extends GetxController {
       Get.snackbar(
         'Access Denied',
         e.message,
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.redAccent,
         colorText: Colors.white,
       );
@@ -187,7 +212,7 @@ class ScheduleController extends GetxController {
       Get.snackbar(
         'Error',
         'Could not delete schedule: $e',
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
       );
     } finally {
       isLoading.value = false;

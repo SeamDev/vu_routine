@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -6,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:vu_routine/app/modules/navbar/controllers/navbar_controller.dart';
 import 'package:vu_routine/app/routes/app_pages.dart';
 
-class NotificationService {
+class NotificationService extends GetxService {
   NotificationService._();
 
   static final NotificationService instance = NotificationService._();
@@ -19,6 +22,33 @@ class NotificationService {
 
   bool _initialized = false;
   bool _listenersRegistered = false;
+
+  // Network error Bypass
+
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
+
+  bool _topicSubscribed = false;
+  bool _subscribing = false;
+
+  Future<void> _subscribeToTopic() async {
+    if (_topicSubscribed || _subscribing) return;
+
+    _subscribing = true;
+
+    try {
+      await FirebaseMessaging.instance
+          .subscribeToTopic('tall_users')
+          .timeout(const Duration(seconds: 5));
+
+      _topicSubscribed = true;
+
+      debugPrint('Subscribed to all_users');
+    } catch (e) {
+      debugPrint('Topic subscription failed: $e');
+    } finally {
+      _subscribing = false;
+    }
+  }
 
   // Initialize notifications
   Future<void> initialize() async {
@@ -37,8 +67,20 @@ class NotificationService {
       debugPrint('Notification permission: ${settings.authorizationStatus}');
 
       // Subscribe to global topic
-      await messaging.subscribeToTopic('all_users');
-      debugPrint('Subscribed to all_users');
+
+      unawaited(_subscribeToTopic());
+
+      _connectivitySubscription ??= Connectivity().onConnectivityChanged.listen(
+        (results) {
+          final connected = results.any(
+            (result) => result != ConnectivityResult.none,
+          );
+
+          if (connected && !_topicSubscribed) {
+            unawaited(_subscribeToTopic());
+          }
+        },
+      );
 
       // Create Android channel
       const channel = AndroidNotificationChannel(
@@ -67,13 +109,6 @@ class NotificationService {
       // Register listeners only once
       if (!_listenersRegistered) {
         FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-          debugPrint('========== FOREGROUND FCM ==========');
-          debugPrint('Message ID: ${message.messageId}');
-          debugPrint('Title: ${message.notification?.title}');
-          debugPrint('Body: ${message.notification?.body}');
-          debugPrint('Data: ${message.data}');
-          debugPrint('====================================');
-
           try {
             await _showForegroundNotification(message);
             debugPrint('LOCAL NOTIFICATION DISPLAY REQUEST SENT');
@@ -114,8 +149,6 @@ class NotificationService {
       debugPrint('Notification initialization error: $e');
       debugPrintStack(stackTrace: stackTrace);
     }
-
-    debugPrint("INittialized ");
   }
 
   // Foreground FCM -> Local notification
@@ -212,5 +245,12 @@ class NotificationService {
         Get.offAllNamed(Routes.SCHEDULE);
       }
     });
+  }
+
+  @override
+  void onClose() {
+    _connectivitySubscription?.cancel();
+    _connectivitySubscription = null;
+    super.onClose();
   }
 }

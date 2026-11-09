@@ -52,7 +52,7 @@ class HomeView extends GetView<HomeController> {
                               ],
                             ),
                             ElevatedButton.icon(
-                              onPressed: () => controller.updateInfo(),
+                              onPressed: () => controller.updateInfo(null),
                               icon: const Icon(Icons.add, size: 18),
                               label: const Text("Upload Routine"),
                               style: ElevatedButton.styleFrom(

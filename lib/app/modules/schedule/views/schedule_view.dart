@@ -143,7 +143,6 @@ class ScheduleView extends GetView<ScheduleController> {
                   );
                 }
                 final now = DateTime.now();
-
                 controller.filteredSchedules.value =
                     switch (controller.selectedFilter.value) {
                       'Past' =>
@@ -155,51 +154,58 @@ class ScheduleView extends GetView<ScheduleController> {
 
                       _ =>
                         controller.schedules
-                            .where(
-                              (item) =>
-                                  item.scheduledAt.isAfter(now) ||
-                                  item.scheduledAt.isAtSameMomentAs(now),
-                            )
+                            .where((item) => !item.scheduledAt.isBefore(now))
                             .toList(),
                     };
 
                 final grouped = controller.groupedSchedules;
 
                 if (grouped.isEmpty) {
-                  return const Center(
+                  return Center(
                     child: Padding(
-                      padding: EdgeInsets.all(30),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.event_note_rounded,
-                            size: 60,
-                            color: Color(0xFF5148F5),
-                          ),
+                      padding: const EdgeInsets.all(30),
+                      child: RefreshIndicator(
+                        color: const Color(0xFF5148F5),
+                        onRefresh: controller.fetchSchedules,
+                        child: SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.6,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.event_note_rounded,
+                                  size: 60,
+                                  color: Color(0xFF5148F5),
+                                ),
 
-                          SizedBox(height: 16),
+                                const SizedBox(height: 16),
 
-                          Text(
-                            'No Upcoming Schedules',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w800,
-                              color: Color(0xFF20222D),
+                                const Text(
+                                  'No Upcoming Schedules',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w800,
+                                    color: Color(0xFF20222D),
+                                  ),
+                                ),
+
+                                const SizedBox(height: 8),
+
+                                if (controller.settingsController.isAdmin.value)
+                                  const Text(
+                                    'Tap the + button to add a schedule.',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Color(0xFF8D94A5),
+                                    ),
+                                  ),
+                              ],
                             ),
                           ),
-
-                          SizedBox(height: 8),
-
-                          Text(
-                            'Tap the + button to add a schedule.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Color(0xFF8D94A5),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   );
@@ -661,6 +667,15 @@ class ScheduleView extends GetView<ScheduleController> {
                       onChanged: (value) {
                         setState(() {
                           includeTime = value;
+                          selectedDateTime = DateTime(
+                            DateTime.now().year,
+                            DateTime.now().month,
+                            DateTime.now().day,
+                            23,
+                            59,
+                            59,
+                            999,
+                          );
                         });
                       },
                     ),
@@ -726,6 +741,10 @@ class ScheduleView extends GetView<ScheduleController> {
                               date.year,
                               date.month,
                               date.day,
+                              23,
+                              59,
+                              59,
+                              999,
                             );
                           });
                         }
@@ -905,9 +924,7 @@ class ScheduleView extends GetView<ScheduleController> {
                                   .format(selectedDateTime)
                             : DateFormat('EEE, dd MMM yyyy')
                                   .format(selectedDateTime),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                       onPressed: () async {
                         final date = await showDatePicker(
@@ -944,6 +961,10 @@ class ScheduleView extends GetView<ScheduleController> {
                               date.year,
                               date.month,
                               date.day,
+                              23,
+                              59,
+                              59,
+                              999,
                             );
                           });
                         }
@@ -1033,10 +1054,17 @@ class ScheduleView extends GetView<ScheduleController> {
               ),
             ),
             onPressed: () {
-              controller.deleteSchedule(id: item.id);
+              if (controller.deleting.value) return;
 
-              Get.back(); // close confirmation
-              Get.back(); // close details dialog
+              controller.deleting.value = true;
+              try {
+                controller.deleteSchedule(id: item.id);
+
+                Get.back(); // close confirmation
+                Get.back(); // close details dialog
+              } finally {
+                controller.deleting.value = false;
+              }
             },
             child: const Text(
               'Delete',
